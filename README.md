@@ -11,10 +11,10 @@ Expense Tracker Rest API in Express (Typescript)
 
 ## Routes : 
 
-1. post request (/transaction):
-               params: ammount (required)
-2. delete request (/transaction):
-               params: id(required)            
+1. post request (/transaction): <br/>
+               params => ammount (required)
+2. delete request (/transaction): <br/>
+               params => id(required)            
 3. get request (/allTransactions)             
                
                
