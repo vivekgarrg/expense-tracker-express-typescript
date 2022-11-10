@@ -2,15 +2,16 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import expenseModel from "./models/expenseSchema";
 import mongoose, { Types } from "mongoose";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
 
 const app: Application = express();
 
 app.use(bodyParser.json());
 
+dotenv.config();
+
 mongoose
-  .connect(
-    "mongodb+srv://admin:vivek123@cluster0.sabdy.mongodb.net/expense-tracker"
-  )
+  .connect(process.env.MONGO_URI || "")
   .then((conn) => console.log("connected"))
   .catch((err) => console.log(err));
 
@@ -76,4 +77,6 @@ app.delete("/transaction", async (req: Request, res: Response) => {
 });
 
 //port of application
-app.listen(5000, () => console.log("Server is running."));
+app.listen(process.env.PORT, () =>
+  console.log(`Server is running on port ${process.env.PORT}.`)
+);

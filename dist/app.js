@@ -16,10 +16,12 @@ const express_1 = __importDefault(require("express"));
 const expenseSchema_1 = __importDefault(require("./models/expenseSchema"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const app = (0, express_1.default)();
 app.use(body_parser_1.default.json());
+dotenv_1.default.config();
 mongoose_1.default
-    .connect("mongodb+srv://admin:vivek123@cluster0.sabdy.mongodb.net/expense-tracker")
+    .connect(process.env.MONGO_URI || "")
     .then((conn) => console.log("connected"))
     .catch((err) => console.log(err));
 app.post("/transaction", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -85,4 +87,4 @@ app.delete("/transaction", (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 }));
 //port of application
-app.listen(5000, () => console.log("Server is running."));
+app.listen(process.env.PORT, () => console.log(`Server is running on port ${process.env.PORT}.`));
