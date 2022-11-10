@@ -14,69 +14,64 @@ mongoose
   .then((conn) => console.log("connected"))
   .catch((err) => console.log(err));
 
-app.get("/newUser", async (req: Request, res: Response) => {
-  const response = await expenseModel.create({ total: 0, transaction: [] });
-  res.status(201).json({
-    message: "User Created Success",
-    data: response,
-  });
+app.post("/transaction", async (req: Request, res: Response) => {
+  try {
+    const ammount: number = req.body.ammount; //extracting the ammount from body of the request
+    let Text: string;
+    if (ammount > 0) {
+      Text = "Credit";
+    } else {
+      Text = "Debit";
+    }
+    const data = await expenseModel.create({ ammount: ammount, text: Text });
+    res.status(201).json({
+      message: "success",
+      data: data,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "error",
+      error: error,
+    });
+  }
 });
 
-app.post("/transaction", async (req: Request, res: Response) => {
-  const ammount: number = req.body.ammount; //extracting the ammount from body of the request
-  const id: Types.ObjectId = req.body.id; //extracting id from request
-
-  //finding the object by the id.
-  const response = await expenseModel.findById(id);
-  const prevTotal: number = response?.total || 0;
-  const prevTransaction: any[] = response?.transaction || [];
-
-  //if there is no such user with that id.
-  if (!response) {
-    res.status(401).json("User not found");
+app.get("/allTransactions", async (req: Request, res: Response) => {
+  try {
+    const data = await expenseModel.find();
+    const totalTrandactions = await expenseModel.count({});
+    res.status(200).json({
+      message: "success",
+      totalTrandactions,
+      data,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "error",
+      error,
+    });
   }
+});
 
-  //amount > 0 (credit)
-  if (ammount > 0) {
-    //new ammount to be updated
-    let newAmmount: number = prevTotal + ammount;
-    //new transaction array to be updated
-    let newTransaction = [
-      ...prevTransaction,
-      { expense: "credit", ammount: ammount },
-    ];
+app.delete("/transaction", async (req: Request, res: Response) => {
+  try {
+    const id: Types.ObjectId = req.body.id;
+    const data = await expenseModel.findByIdAndDelete(id, { new: true });
 
-    //updated data
-    const data = await expenseModel.findByIdAndUpdate(
-      id,
-      {
-        total: newAmmount,
-        transaction: newTransaction,
-      },
-      { new: true }
-    );
-
-    //sending response
-    res.status(200).json(data);
-  }
-  //if ammount <0 (debit)
-  else {
-    let newAmmount: number = prevTotal + ammount;
-    let newTransaction = [
-      ...prevTransaction,
-      { expense: "debit", ammount: ammount },
-    ];
-
-    const data = await expenseModel.findByIdAndUpdate(
-      id,
-      {
-        total: newAmmount,
-        transaction: newTransaction,
-      },
-      { new: true }
-    );
-
-    res.status(200).json(data);
+    if (data) {
+      res.status(200).json({
+        messsage: "deleted successfully",
+      });
+    } else {
+      res.status(404).json({
+        messsage: "User not found.",
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: "error",
+      error,
+    });
   }
 });
 

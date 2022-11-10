@@ -22,53 +22,66 @@ mongoose_1.default
     .connect("mongodb+srv://admin:vivek123@cluster0.sabdy.mongodb.net/expense-tracker")
     .then((conn) => console.log("connected"))
     .catch((err) => console.log(err));
-app.get("/newUser", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield expenseSchema_1.default.create({ total: 0, transaction: [] });
-    res.status(201).json({
-        message: "User Created Success",
-        data: response,
-    });
-}));
 app.post("/transaction", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const ammount = req.body.ammount; //extracting the ammount from body of the request
-    const id = req.body.id; //extracting id from request
-    //finding the object by the id.
-    const response = yield expenseSchema_1.default.findById(id);
-    const prevTotal = (response === null || response === void 0 ? void 0 : response.total) || 0;
-    const prevTransaction = (response === null || response === void 0 ? void 0 : response.transaction) || [];
-    //if there is no such user with that id.
-    if (!response) {
-        res.status(401).json("User not found");
+    try {
+        const ammount = req.body.ammount; //extracting the ammount from body of the request
+        let Text;
+        if (ammount > 0) {
+            Text = "Credit";
+        }
+        else {
+            Text = "Debit";
+        }
+        const data = yield expenseSchema_1.default.create({ ammount: ammount, text: Text });
+        res.status(201).json({
+            message: "success",
+            data: data,
+        });
     }
-    //amount > 0 (credit)
-    if (ammount > 0) {
-        //new ammount to be updated
-        let newAmmount = prevTotal + ammount;
-        //new transaction array to be updated
-        let newTransaction = [
-            ...prevTransaction,
-            { expense: "credit", ammount: ammount },
-        ];
-        //updated data
-        const data = yield expenseSchema_1.default.findByIdAndUpdate(id, {
-            total: newAmmount,
-            transaction: newTransaction,
-        }, { new: true });
-        //sending response
-        res.status(200).json(data);
+    catch (error) {
+        res.status(400).json({
+            message: "error",
+            error: error,
+        });
     }
-    //if ammount <0 (debit)
-    else {
-        let newAmmount = prevTotal + ammount;
-        let newTransaction = [
-            ...prevTransaction,
-            { expense: "debit", ammount: ammount },
-        ];
-        const data = yield expenseSchema_1.default.findByIdAndUpdate(id, {
-            total: newAmmount,
-            transaction: newTransaction,
-        }, { new: true });
-        res.status(200).json(data);
+}));
+app.get("/allTransactions", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield expenseSchema_1.default.find();
+        const totalTrandactions = yield expenseSchema_1.default.count({});
+        res.status(200).json({
+            message: "success",
+            totalTrandactions,
+            data,
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            message: "error",
+            error,
+        });
+    }
+}));
+app.delete("/transaction", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.body.id;
+        const data = yield expenseSchema_1.default.findByIdAndDelete(id, { new: true });
+        if (data) {
+            res.status(200).json({
+                messsage: "deleted successfully",
+            });
+        }
+        else {
+            res.status(404).json({
+                messsage: "User not found.",
+            });
+        }
+    }
+    catch (error) {
+        res.status(400).json({
+            message: "error",
+            error,
+        });
     }
 }));
 //port of application

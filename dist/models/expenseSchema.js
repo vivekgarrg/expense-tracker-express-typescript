@@ -26,17 +26,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 //expense schema
 const expenseSchema = new mongoose_1.Schema({
-    total: { type: Number, required: true },
-    transaction: [
-        {
-            expense: String,
-            ammount: Number,
-            time: {
-                type: Date,
-                default: Date.now,
-            },
-        },
-    ],
+    ammount: { type: Number, required: true },
+    text: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now },
 });
 //expense model
 const expenseModel = mongoose_1.default.model("expense", expenseSchema);

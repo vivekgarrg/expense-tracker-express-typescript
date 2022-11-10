@@ -1,31 +1,17 @@
-import mongoose, { Schema, Types } from "mongoose";
-
-//for types of transaction
-export interface typeOfTransaction {
-  expense: string;
-  ammount: number;
-  time: Date;
-}
+import mongoose, { Schema } from "mongoose";
 
 //for expense schema
 interface expense {
-  total: number;
-  transaction: Types.DocumentArray<typeOfTransaction>;
+  ammount: number;
+  text: string;
+  createdAt: Date;
 }
 
 //expense schema
 const expenseSchema = new Schema<expense>({
-  total: { type: Number, required: true },
-  transaction: [
-    {
-      expense: String,
-      ammount: Number,
-      time: {
-        type: Date,
-        default: Date.now,
-      },
-    },
-  ],
+  ammount: { type: Number, required: true },
+  text: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
 //expense model
