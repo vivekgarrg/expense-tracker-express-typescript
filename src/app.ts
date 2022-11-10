@@ -4,77 +4,26 @@ import mongoose, { Types } from "mongoose";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 
+//router
+import transactionRouter from "./routes/transaction.js";
+
+//application
 const app: Application = express();
 
+//body parser to parse data from json to js
 app.use(bodyParser.json());
 
+//.env configuration
 dotenv.config();
 
+//mongoose connection
 mongoose
   .connect(process.env.MONGO_URI || "")
   .then((conn) => console.log("connected"))
   .catch((err) => console.log(err));
 
-app.post("/transaction", async (req: Request, res: Response) => {
-  try {
-    const ammount: number = req.body.ammount; //extracting the ammount from body of the request
-    let Text: string;
-    if (ammount > 0) {
-      Text = "Credit";
-    } else {
-      Text = "Debit";
-    }
-    const data = await expenseModel.create({ ammount: ammount, text: Text });
-    res.status(201).json({
-      message: "success",
-      data: data,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: "error",
-      error: error,
-    });
-  }
-});
-
-app.get("/allTransactions", async (req: Request, res: Response) => {
-  try {
-    const data = await expenseModel.find();
-    const totalTrandactions = await expenseModel.count({});
-    res.status(200).json({
-      message: "success",
-      totalTrandactions,
-      data,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: "error",
-      error,
-    });
-  }
-});
-
-app.delete("/transaction", async (req: Request, res: Response) => {
-  try {
-    const id: Types.ObjectId = req.body.id;
-    const data = await expenseModel.findByIdAndDelete(id, { new: true });
-
-    if (data) {
-      res.status(200).json({
-        messsage: "deleted successfully",
-      });
-    } else {
-      res.status(404).json({
-        messsage: "User not found.",
-      });
-    }
-  } catch (error) {
-    res.status(400).json({
-      message: "error",
-      error,
-    });
-  }
-});
+//routes
+app.use("/", transactionRouter);
 
 //port of application
 app.listen(process.env.PORT, () =>
