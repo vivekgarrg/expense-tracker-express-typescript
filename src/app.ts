@@ -1,11 +1,10 @@
 import express, { Application, Request, Response, NextFunction } from "express";
-import expenseModel from "./models/expenseSchema";
 import mongoose, { Types } from "mongoose";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 
 //router
-import transactionRouter from "./routes/transaction.js";
+import transactionRouter from "./routes/transaction";
 
 //application
 const app: Application = express();

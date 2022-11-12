@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllTransactions = exports.deleteTransaction = exports.createTransaction = void 0;
 const expenseSchema_1 = __importDefault(require("../models/expenseSchema"));
+//controller for creating a transaction
 const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const ammount = req.body.ammount; //extracting the ammount from body of the request
@@ -38,6 +39,7 @@ const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.createTransaction = createTransaction;
+//controller for deleting a transaction by its id.
 const deleteTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.body.id;
@@ -61,6 +63,7 @@ const deleteTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.deleteTransaction = deleteTransaction;
+//controller for getting all the transactions
 const getAllTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield expenseSchema_1.default.find();

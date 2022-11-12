@@ -3,7 +3,7 @@ import {
   createTransaction,
   deleteTransaction,
   getAllTransactions,
-} from "../controllers/transaction.js";
+} from "../controllers/transaction";
 
 const router: Router = express.Router();
 //transaction route (post and delete request)

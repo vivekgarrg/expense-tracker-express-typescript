@@ -8,7 +8,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
 //router
-const transaction_js_1 = __importDefault(require("./routes/transaction.js"));
+const transaction_1 = __importDefault(require("./routes/transaction"));
 //application
 const app = (0, express_1.default)();
 //body parser to parse data from json to js
@@ -21,6 +21,6 @@ mongoose_1.default
     .then((conn) => console.log("connected"))
     .catch((err) => console.log(err));
 //routes
-app.use("/", transaction_js_1.default);
+app.use("/", transaction_1.default);
 //port of application
 app.listen(process.env.PORT, () => console.log(`Server is running on port ${process.env.PORT}.`));
